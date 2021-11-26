@@ -25,11 +25,11 @@
 
                      <div class="col-md-5 center-item">
                         <div class="input-group number-spinner">
-                           <button id="blackPhoneLowButton" class="btn btn-default"><i class="fas fa-minus"></i></button>
-                           <input id="blackPhoneOrderAmount" type="text" class="form-control text-center" value="1">
-                           <button id="blackPhoneHighButton" class="btn btn-default"><i class="fas fa-plus"></i></button>
+                           <button onclick="amountPrice('phone', false)" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                           <input id="phoneAmount" type="text" class="form-control text-center" value="1">
+                           <button onclick="amountPrice('phone', true)" class="btn btn-default"><i class="fas fa-plus"></i></button>
                         </div>
-                        <h5>$ <span id="blackPhonePrice">1219</span></h5>
+                        <h5>$ <span id="phonePrice">1219</span></h5>
                         <img src="images/remove.png" alt="" class="remove-item">
                      </div>
                   </div>
@@ -43,12 +43,12 @@
                      </div>
                      <div class="col-md-5 center-item">
                         <div class="input-group number-spinner">
-                           <button class="btn btn-default"><i class="fas fa-minus"></i></button>
-                           <input type="text" class="form-control text-center" value="1">
-                           <button class="btn btn-default"><i class="fas fa-plus"></i></button>
+                           <button onclick="amountPrice('case', false)" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                           <input id="caseAmount" type="text" class="form-control text-center" value="1">
+                           <button onclick="amountPrice('case', true)" class="btn btn-default"><i class="fas fa-plus"></i></button>
 
                         </div>
-                        <h5>$59</h5>
+                        <h5>$ <span id="casePrice">59</span></h5>
                         <img src="images/remove.png" alt="" class="remove-item">
                      </div>
                   </div>
@@ -64,9 +64,9 @@
                      </div>
 
                      <div class="col-md-4 status">
-                        <h5>$1,278</h5>
-                        <h5>$0</h5>
-                        <h5>$1,278</h5>
+                        <h5>$ <span id="totalPrice">1,278</span></h5>
+                        <h5>$ <span id="tax">0</span></h5>
+                        <h5>$ <span id="total">1,278</span></h5>
                      </div>
                   </div>
                </div>
@@ -80,40 +80,116 @@
 
 
    <script>
-      //black phone low button
-      const blackPhoneLowButton = document.getElementById("blackPhoneLowButton");
-      blackPhoneLowButton.addEventListener("click", function(){
-         // black phone amount decrease
-         const blackPhoneAmountTextDe = convertValueToInteger("blackPhoneOrderAmount");
-         const finalOrderDecrease = blackPhoneAmountTextDe - 1;
-         document.getElementById("blackPhoneOrderAmount").value = finalOrderDecrease;
-
-         const blackPhonePrice = document.getElementById("blackPhonePrice").innerText;
-         const blackPhonePriceTextIn = parseFloat(blackPhonePrice);
-         const finalPrice = blackPhonePriceTextIn - 1219;
-         document.getElementById("blackPhonePrice").innerText = finalPrice;
-      })
-
-      //black phone high button
-      const blackPhoneHighButton = document.getElementById("blackPhoneHighButton");
-      blackPhoneHighButton.addEventListener("click", function(){
-         //black phone amount increase
-         const blackPhoneAmountTextIn = convertValueToInteger("blackPhoneOrderAmount");
-         const finalOrderIncrease = blackPhoneAmountTextIn + 1;
-         document.getElementById("blackPhoneOrderAmount").value = finalOrderIncrease;
-
-         const blackPhonePrice = document.getElementById("blackPhonePrice").innerText;
-         const blackPhonePriceTextIn = parseFloat(blackPhonePrice);
-         const finalPrice = 1219 * finalOrderIncrease;
-         document.getElementById("blackPhonePrice").innerText = finalPrice;
-         
-      })
-
-      function convertValueToInteger(id){
-         const amountId = document.getElementById(id).value;
-         const amountVal = parseFloat(amountId);
-         return amountVal;
+      function amountPrice(product, input){
+         const productCount = document.getElementById(product + 'Amount');
+         const productParse = parseFloat(productCount.value);
+         let newAmount = productParse;
+         if(input == true){
+            newAmount = productParse + 1;
+         }
+         if(input == false && newAmount > 0){
+            newAmount = productParse - 1;
+         }
+         productCount.value = newAmount;
+         // const price = newAmount * 1219;
+         let newPrice = 0;
+         if(product == 'phone'){
+            newPrice = newAmount * 1219;
+         }
+         if(product == 'case'){
+            newPrice = newAmount * 59;
+         }
+         document.getElementById(product + 'Price').innerText = newPrice;
+         totalPrice(product);
       }
+
+      function totalPrice(product){
+         const phoneAmount = getValue('phone'); 
+         const caseAmount = getValue('case');
+
+         const finalPrice = phoneAmount * 1219 + caseAmount * 59;
+         document.getElementById('totalPrice').innerText = finalPrice;
+
+         const tax = Math.round(finalPrice * 0.1);
+         document.getElementById('tax').innerText = tax;
+
+         const total = finalPrice + tax;
+         document.getElementById('total').innerText = total;
+      }
+
+      function getValue(product){
+         const item = document.getElementById(product + 'Amount');
+         const itemAmount = parseFloat(item.value);
+         return itemAmount;
+      }
+
+
+      // function amountPricePhone(increase){
+      //    const product = document.getElementById('phoneAmount');
+      //    const productParse = parseFloat(product.value);
+      //    let newAmount = productParse;
+      //    if(increase == true){
+      //       newAmount = productParse + 1;
+      //    }
+      //    if(increase == false && newAmount > 0){
+      //       newAmount = productParse - 1;
+      //    }
+      //    product.value = newAmount;
+      //    const price = newAmount * 1219;
+      //    document.getElementById('phonePrice').innerText = price;
+      // }
+
+      // function amountPriceCase(increase){
+      //    const product = document.getElementById('CaseAmount');
+      //    const productParse = parseFloat(product.value);
+      //    let newAmount = productParse;
+      //    if(increase == true)
+      //    {
+      //       newAmount = productParse + 1;
+      //    }
+      //    if(increase == false && newAmount > 0){
+      //       newAmount = productParse - 1;
+      //    }
+      //    product.value = newAmount;
+      //    const price = newAmount * 59;
+      //    document.getElementById('casePrice').innerText = price;
+      // }
+
+      // document.getElementById('phoneLow').addEventListener('click', function(){
+      //    const minus = document.getElementById('phoneAmount');
+      //    const phoneParse = parseFloat(minus.value);
+      //    const phoneIncrease = phoneParse -1
+      //    minus.value = phoneIncrease;
+      //    const price = phoneIncrease * 1219;
+      //    document.getElementById('phonePrice').innerText = price;
+      // })
+
+      // document.getElementById('phoneHigh').addEventListener('click', function(){
+      //    const plus = document.getElementById('phoneAmount');
+      //    const phoneParse = parseFloat(plus.value);
+      //    const phoneDecrease = phoneParse + 1;
+      //    plus.value = phoneDecrease;
+      //    const price = phoneDecrease * 1219;
+      //    document.getElementById('phonePrice').innerText = price;
+      // })
+
+      // document.getElementById('caseLow').addEventListener('click', function(){
+      //    const minus = document.getElementById('CaseAmount');
+      //    const phoneParse = parseFloat(minus.value);
+      //    const decrease = phoneParse - 1;
+      //    minus.value = decrease;
+      //    const price = decrease * 59;
+      //    document.getElementById('casePrice').innerText = price;
+      // })
+      
+      // document.getElementById('caseHigh').addEventListener('click', function(){
+      //    const plus = document.getElementById('CaseAmount');
+      //    const phoneParse = parseFloat(plus.value);
+      //    const increase = phoneParse + 1;
+      //    plus.value = increase;
+      //    const price = increase * 59;
+      //    document.getElementById('casePrice').innerText = price;
+      // })
 
    </script>
 </body>
